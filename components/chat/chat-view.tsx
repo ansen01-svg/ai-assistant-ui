@@ -53,6 +53,7 @@ function newMessage(
     model: null,
     input_tokens: null,
     output_tokens: null,
+    cost_usd: null,
     created_at: new Date().toISOString(),
     ...extra,
   };
@@ -116,6 +117,7 @@ export function ChatView({ conversationId }: { conversationId?: string }) {
             stopReason: data.stop_reason,
             input_tokens: data.input_tokens,
             output_tokens: data.output_tokens,
+            cost_usd: data.cost_usd,
           };
           updateMessage(draft.id, () => reply);
 

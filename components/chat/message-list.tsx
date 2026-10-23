@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 import { MessageItem } from "@/components/chat/message-item";
 import { MESSAGE_WIDTH, type ChatMessage } from "@/components/chat/types";
 import { cn } from "@/lib/utils";
+import { MessageUsage } from "./message-usage";
 
 const STICK_THRESHOLD_PX = 80;
 
@@ -38,7 +39,12 @@ export function MessageList({ messages }: { messages: ChatMessage[] }) {
         )}
       >
         {messages.map((message) => (
-          <MessageItem key={message.id} message={message} />
+          <div key={message.id}>
+            {" "}
+            {/* NEW: wrapper so usage sits right under the reply */}
+            <MessageItem message={message} />
+            {message.role === "assistant" && <MessageUsage message={message} />}
+          </div>
         ))}
       </div>
     </div>

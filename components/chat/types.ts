@@ -12,4 +12,5 @@ export type ChatMessage = Message & {
   status?: MessageStatus;
   error?: string;
   stopReason?: string | null;
+  cost_usd: number | null; // NEW
 };
