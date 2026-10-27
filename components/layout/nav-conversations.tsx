@@ -105,7 +105,7 @@ export function NavConversations() {
               <DropdownMenuContent side="right" align="start">
                 <DropdownMenuItem
                   variant="destructive"
-                  onSelect={() => setToDelete(conversation)}
+                  onClick={() => setToDelete(conversation)}
                 >
                   <Trash2Icon />
                   Delete
