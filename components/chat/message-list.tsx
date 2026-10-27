@@ -2,9 +2,9 @@
 
 import { useEffect, useRef } from "react";
 
-import { MessageItem } from "@/components/chat/message-item";
 import { MESSAGE_WIDTH, type ChatMessage } from "@/components/chat/types";
 import { cn } from "@/lib/utils";
+import { Markdown } from "./markdown";
 import { MessageUsage } from "./message-usage";
 
 const STICK_THRESHOLD_PX = 80;
@@ -38,14 +38,41 @@ export function MessageList({ messages }: { messages: ChatMessage[] }) {
           MESSAGE_WIDTH,
         )}
       >
-        {messages.map((message) => (
-          <div key={message.id}>
-            {" "}
-            {/* NEW: wrapper so usage sits right under the reply */}
-            <MessageItem message={message} />
-            {message.role === "assistant" && <MessageUsage message={message} />}
-          </div>
-        ))}
+        {messages.map((m) =>
+          m.role === "assistant" ? (
+            <AssistantMessage key={m.id} message={m} />
+          ) : (
+            <div key={m.id} className="flex justify-end">
+              <div className="max-w-[80%] rounded-2xl bg-muted px-4 py-2 whitespace-pre-wrap">
+                {m.content}
+              </div>
+            </div>
+          ),
+        )}
+      </div>
+    </div>
+  );
+}
+
+function AssistantMessage({ message: m }: { message: ChatMessage }) {
+  const isStreaming = m.status === "streaming";
+
+  return (
+    <div className="flex gap-3">
+      <div className="min-w-0 flex-1 pt-1">
+        {m.content ? (
+          <Markdown content={m.content} />
+        ) : isStreaming ? (
+          <span className="text-sm text-muted-foreground">Thinking…</span>
+        ) : null}
+
+        {m.status === "error" && (
+          <p className="text-sm text-destructive">{m.error}</p>
+        )}
+        {m.status === "stopped" && (
+          <p className="text-xs text-muted-foreground">Stopped</p>
+        )}
+        {!m.status && <MessageUsage message={m} />}
       </div>
     </div>
   );

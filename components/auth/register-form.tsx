@@ -1,17 +1,28 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Controller, useForm } from "react-hook-form"
-import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Controller, useForm } from "react-hook-form";
+import { z } from "zod";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { Spinner } from "@/components/ui/spinner"
-import { useRegister } from "@/hooks/use-auth"
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
+import { useRegister } from "@/hooks/use-auth";
 
 // Same limits as the backend RegisterRequest schema
 const schema = z
@@ -24,34 +35,44 @@ const schema = z
   .refine((v) => v.password === v.confirmPassword, {
     message: "Passwords don't match",
     path: ["confirmPassword"],
-  })
+  });
 
-type FormValues = z.infer<typeof schema>
+type FormValues = z.infer<typeof schema>;
 
 const fields = [
   { name: "name", label: "Name", type: "text", autoComplete: "name" },
   { name: "email", label: "Email", type: "email", autoComplete: "email" },
-  { name: "password", label: "Password", type: "password", autoComplete: "new-password" },
-  { name: "confirmPassword", label: "Confirm password", type: "password", autoComplete: "new-password" },
-] as const
+  {
+    name: "password",
+    label: "Password",
+    type: "password",
+    autoComplete: "new-password",
+  },
+  {
+    name: "confirmPassword",
+    label: "Confirm password",
+    type: "password",
+    autoComplete: "new-password",
+  },
+] as const;
 
 export function RegisterForm() {
-  const router = useRouter()
-  const register = useRegister()
+  const router = useRouter();
+  const register = useRegister();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { name: "", email: "", password: "", confirmPassword: "" },
-  })
+  });
 
   async function onSubmit({ name, email, password }: FormValues) {
     try {
-      await register.mutateAsync({ name, email, password })
-      router.replace("/chat")
+      await register.mutateAsync({ name, email, password });
+      router.replace("/chat");
     } catch (error) {
       form.setError("root", {
         message: error instanceof Error ? error.message : "Registration failed",
-      })
+      });
     }
   }
 
@@ -91,7 +112,10 @@ export function RegisterForm() {
             </Button>
             <p className="text-muted-foreground text-center text-sm">
               Already have an account?{" "}
-              <Link href="/login" className="text-foreground underline underline-offset-4">
+              <Link
+                href="/login"
+                className="text-foreground underline underline-offset-4"
+              >
                 Log in
               </Link>
             </p>
@@ -99,5 +123,5 @@ export function RegisterForm() {
         </form>
       </CardContent>
     </Card>
-  )
+  );
 }
