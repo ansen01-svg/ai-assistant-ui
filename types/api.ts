@@ -55,4 +55,5 @@ export type ChatStreamEvent =
         stop_reason: string | null;
       };
     }
-  | { event: "error"; data: { detail: string } };
+  | { event: "error"; data: { detail: string } }
+  | { event: "title"; data: { title: string } };

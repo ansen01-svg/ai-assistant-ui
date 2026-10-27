@@ -94,6 +94,7 @@ export function ChatView({ conversationId }: { conversationId?: string }) {
 
     let activeId = conversationId;
     let replyText = "";
+    let aiTitle: string | null = null;
 
     await send(
       { conversation_id: conversationId, message: text, model },
@@ -107,6 +108,9 @@ export function ChatView({ conversationId }: { conversationId?: string }) {
             ...m,
             content: m.content + chunk,
           }));
+        },
+        onTitle: (title) => {
+          aiTitle = title;
         },
         onDone: (data) => {
           const reply: ChatMessage = {
@@ -128,7 +132,7 @@ export function ChatView({ conversationId }: { conversationId?: string }) {
               queryKeys.conversation(activeId),
               {
                 id: activeId,
-                title: text.slice(0, 60),
+                title: aiTitle ?? text.slice(0, 60), // AI title if it arrived
                 model,
                 created_at: now,
                 updated_at: now,
