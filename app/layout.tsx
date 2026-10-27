@@ -10,8 +10,8 @@ const fontMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: { default: "AI Assistant", template: "%s · AI Assistant" },
-  description: "AI Knowledge & Task Assistant",
+  title: { default: "Bobby", template: "%s · Bobby" },
+  description: "Your AI knowledge & task assistant",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

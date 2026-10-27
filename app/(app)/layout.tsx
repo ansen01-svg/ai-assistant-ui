@@ -1,12 +1,18 @@
-import { AuthGuard } from "@/components/auth/auth-guard"
-import { AppSidebar } from "@/components/layout/app-sidebar"
-import { SiteHeader } from "@/components/layout/site-header"
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+import { AuthGuard } from "@/components/auth/auth-guard";
+import { AppSidebar } from "@/components/layout/app-sidebar";
+import { SiteHeader } from "@/components/layout/site-header";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <AuthGuard>
-      <SidebarProvider>
+      <SidebarProvider
+        style={
+          {
+            "--sidebar-width": "20rem",
+          } as React.CSSProperties
+        }
+      >
         <AppSidebar />
         <SidebarInset className="h-svh overflow-hidden">
           <SiteHeader />
@@ -14,5 +20,5 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </SidebarInset>
       </SidebarProvider>
     </AuthGuard>
-  )
+  );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { SparklesIcon, SquarePenIcon } from "lucide-react";
+import { SquarePenIcon } from "lucide-react";
 import Link from "next/link";
 
 import { NavConversations } from "@/components/layout/nav-conversations";
@@ -18,6 +18,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { mainNav, secondaryNav } from "@/lib/nav";
+import { Wordmark } from "../brand";
 
 export function AppSidebar() {
   const { setOpenMobile } = useSidebar();
@@ -28,12 +29,11 @@ export function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" render={<Link href="/chat" />}>
-              <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                <SparklesIcon className="size-4" />
-              </div>
-              <span className="truncate font-semibold">AI Assistant</span>
+              <Wordmark className="text-2xl group-data-[collapsible=icon]:hidden" />
             </SidebarMenuButton>
           </SidebarMenuItem>
+        </SidebarMenu>
+        <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
               tooltip="New chat"
