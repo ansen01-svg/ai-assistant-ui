@@ -12,42 +12,57 @@ export type ExtractedTask = {
   notes: string | null;
 };
 
-export type Task = ExtractedTask & { id: string; status: TaskStatus };
+export type Task = ExtractedTask & {
+  id: string;
+  status: TaskStatus;
+  list_id: string | null;
+};
+export type Extraction = { list_name: string; tasks: ExtractedTask[] };
 
 const BASE = "/tasks";
 
-export function useTasks() {
+export function useTasks(listId: string | null) {
   return useQuery({
-    queryKey: queryKeys.tasks,
-    queryFn: () => api<Task[]>(BASE),
+    queryKey: [...queryKeys.tasks, listId ?? "inbox"],
+    queryFn: () => api<Task[]>(listId ? `${BASE}?list_id=${listId}` : BASE),
   });
 }
 
 export function useExtractTasks() {
   return useMutation({
-    mutationFn: async (text: string) => {
-      const data = await api<{ tasks: ExtractedTask[] }>(`${BASE}/extract`, {
+    mutationFn: (text: string) =>
+      api<Extraction>(`${BASE}/extract`, {
         method: "POST",
         body: JSON.stringify({
           text,
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         }),
-      });
-      return data.tasks;
-    },
+      }),
   });
 }
+
+type CreateTasksInput = {
+  tasks: ExtractedTask[];
+  listId?: string;
+  newListName?: string;
+};
 
 export function useCreateTasks() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (tasks: ExtractedTask[]) =>
+    mutationFn: ({ tasks, listId, newListName }: CreateTasksInput) =>
       api<Task[]>(BASE, {
         method: "POST",
-        body: JSON.stringify({ tasks }),
+        body: JSON.stringify({
+          tasks,
+          list_id: listId,
+          new_list_name: newListName,
+        }),
       }),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: queryKeys.tasks }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.tasks });
+      queryClient.invalidateQueries({ queryKey: queryKeys.taskLists });
+    },
   });
 }
 

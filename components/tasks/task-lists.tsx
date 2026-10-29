@@ -12,8 +12,8 @@ import { formatDueDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { Trash2 } from "lucide-react";
 
-export function TaskList() {
-  const { data: tasks, isPending, error } = useTasks();
+export function TaskList({ listId }: { listId: string | null }) {
+  const { data: tasks, isPending, error } = useTasks(listId);
   const updateStatus = useUpdateTaskStatus();
   const deleteTask = useDeleteTask();
 
