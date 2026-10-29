@@ -14,6 +14,7 @@ export type StreamHandlers = {
   onStart: (conversationId: string) => void;
   onDelta: (text: string) => void;
   onTitle?: (title: string) => void;
+  onTool?: (name: string) => void;
   onDone: (data: DoneData) => void;
   onError: (message: string) => void;
 };
@@ -37,11 +38,15 @@ export function useChatStream() {
       const controller = new AbortController();
       controllerRef.current = controller;
       setIsStreaming(true);
+      let usedTools = false;
 
       try {
         const res = await apiRequest("/chat/stream", {
           method: "POST",
-          body: JSON.stringify(request),
+          body: JSON.stringify({
+            ...request,
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          }),
           headers: { Accept: "text/event-stream" },
           signal: controller.signal,
         });
@@ -59,6 +64,10 @@ export function useChatStream() {
             case "delta":
               handlers.onDelta(event.data.text);
               break;
+            case "tool":
+              usedTools = true;
+              handlers.onTool?.(event.data.name);
+              break;
             case "title":
               handlers.onTitle?.(event.data.title);
               break;
@@ -68,6 +77,11 @@ export function useChatStream() {
                 queryKey: queryKeys.conversations,
                 exact: true,
               });
+              if (usedTools) {
+                // Tools may have created or changed tasks
+                queryClient.invalidateQueries({ queryKey: ["tasks"] });
+                queryClient.invalidateQueries({ queryKey: ["task-lists"] }); // use your queryKeys value
+              }
               break;
             case "error":
               handlers.onError(event.data.detail);

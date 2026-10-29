@@ -56,4 +56,5 @@ export type ChatStreamEvent =
       };
     }
   | { event: "error"; data: { detail: string } }
-  | { event: "title"; data: { title: string } };
+  | { event: "title"; data: { title: string } }
+  | { event: "tool"; data: { name: string; input: Record<string, unknown> } };
