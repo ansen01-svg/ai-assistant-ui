@@ -5,21 +5,35 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreateTasks, useExtractTasks } from "@/hooks/use-tasks";
 import { formatDueDate } from "@/lib/format";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Input } from "../ui/input";
 
-export function TaskExtractor() {
+export function TaskExtractor({ listId }: { listId?: string }) {
+  const router = useRouter();
   const [text, setText] = useState("");
+  const [listName, setListName] = useState("");
   const extract = useExtractTasks();
   const createTasks = useCreateTasks();
-  const extracted = extract.data ?? [];
+  const extracted = extract.data?.tasks ?? [];
+
+  function runExtract() {
+    extract.mutate(text, { onSuccess: (data) => setListName(data.list_name) });
+  }
 
   function save() {
-    createTasks.mutate(extracted, {
-      onSuccess: () => {
-        extract.reset();
-        setText("");
+    const newListName = listId ? undefined : listName.trim() || undefined;
+    createTasks.mutate(
+      { tasks: extracted, listId, newListName },
+      {
+        onSuccess: (created) => {
+          extract.reset();
+          setText("");
+          const newListId = created[0]?.list_id;
+          if (newListName && newListId) router.push(`/tasks/${newListId}`);
+        },
       },
-    });
+    );
   }
 
   return (
@@ -32,17 +46,14 @@ export function TaskExtractor() {
         maxLength={10_000}
         className="max-h-64 overflow-y-auto"
       />
-      <Button
-        onClick={() => extract.mutate(text)}
-        disabled={!text.trim() || extract.isPending}
-      >
+      <Button onClick={runExtract} disabled={!text.trim() || extract.isPending}>
         {extract.isPending ? "Extracting…" : "Extract tasks"}
       </Button>
 
       {extract.error && (
         <p className="text-sm text-destructive">{extract.error.message}</p>
       )}
-      {extract.data?.length === 0 && (
+      {extract.data?.tasks?.length === 0 && (
         <p className="text-sm text-muted-foreground">No tasks found.</p>
       )}
 
@@ -69,6 +80,16 @@ export function TaskExtractor() {
               </li>
             ))}
           </ul>
+
+          {!listId && (
+            <Input
+              value={listName}
+              onChange={(e) => setListName(e.target.value)}
+              placeholder="List name (leave empty for Inbox)"
+              maxLength={100}
+            />
+          )}
+
           <div className="flex gap-2">
             <Button onClick={save} disabled={createTasks.isPending}>
               {createTasks.isPending
@@ -79,6 +100,7 @@ export function TaskExtractor() {
               Discard
             </Button>
           </div>
+
           {createTasks.error && (
             <p className="text-sm text-destructive">
               {createTasks.error.message}

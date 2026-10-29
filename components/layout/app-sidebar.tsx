@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/sidebar";
 import { mainNav, secondaryNav } from "@/lib/nav";
 import { Wordmark } from "../brand";
+import { NavTaskLists } from "../nav-task-lists";
 
 export function AppSidebar() {
   const { setOpenMobile } = useSidebar();
@@ -51,6 +52,7 @@ export function AppSidebar() {
 
       <SidebarContent>
         <NavMain items={mainNav} />
+        <NavTaskLists />
         <NavConversations />
         <NavMain items={secondaryNav} className="mt-auto" />
       </SidebarContent>
