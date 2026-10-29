@@ -33,10 +33,17 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 const SUGGESTIONS = [
+  "What tasks are due this week?",
   "Explain how RAG works in simple terms",
-  "Write a FastAPI endpoint that returns JSON",
   "Give me a checklist for a production launch",
 ];
+
+const TOOL_LABELS: Record<string, string> = {
+  search_tasks: "Searching tasks…",
+  create_task: "Creating a task…",
+  update_task_status: "Updating a task…",
+  list_task_lists: "Reading task lists…",
+};
 
 const isChatModel = (value: string | null | undefined): value is ChatModel =>
   CHAT_MODELS.some((m) => m.id === value);
@@ -73,6 +80,7 @@ export function ChatView({ conversationId }: { conversationId?: string }) {
     null,
   );
   const [selectedModel, setSelectedModel] = useState<ChatModel | null>(null);
+  const [activeTool, setActiveTool] = useState<string | null>(null);
 
   const messages: ChatMessage[] =
     localMessages ?? conversation.data?.messages ?? [];
@@ -103,16 +111,21 @@ export function ChatView({ conversationId }: { conversationId?: string }) {
           activeId = id;
         },
         onDelta: (chunk) => {
+          setActiveTool(null);
           replyText += chunk;
           updateMessage(draft.id, (m) => ({
             ...m,
             content: m.content + chunk,
           }));
         },
+        onTool: (name) => {
+          setActiveTool(name);
+        },
         onTitle: (title) => {
           aiTitle = title;
         },
         onDone: (data) => {
+          setActiveTool(null);
           const reply: ChatMessage = {
             ...draft,
             id: data.message_id,
@@ -147,6 +160,7 @@ export function ChatView({ conversationId }: { conversationId?: string }) {
           }
         },
         onError: (detail) => {
+          setActiveTool(null);
           updateMessage(draft.id, (m) => ({
             ...m,
             status: "error",
@@ -166,6 +180,7 @@ export function ChatView({ conversationId }: { conversationId?: string }) {
 
   function handleStop() {
     stop();
+    setActiveTool(null);
     setLocalMessages(
       (prev) =>
         prev?.map((m) =>
@@ -259,6 +274,14 @@ export function ChatView({ conversationId }: { conversationId?: string }) {
         <MessageList messages={messages} />
       )}
       <div className={cn("mx-auto w-full px-4 pt-2 pb-4", INPUT_WIDTH)}>
+        {activeTool && (
+          <p
+            className="text-muted-foreground mb-2 animate-pulse text-sm"
+            aria-live="polite"
+          >
+            {TOOL_LABELS[activeTool] ?? "Working…"}
+          </p>
+        )}
         {input}
         <p className="text-muted-foreground mt-2 text-center text-xs">
           AI can make mistakes. Check important information.
