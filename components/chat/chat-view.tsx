@@ -41,8 +41,12 @@ const SUGGESTIONS = [
 const TOOL_LABELS: Record<string, string> = {
   search_tasks: "Searching tasks…",
   create_task: "Creating a task…",
-  update_task_status: "Updating a task…",
+  update_task: "Updating a task…",
+  delete_task: "Deleting a task…",
   list_task_lists: "Reading task lists…",
+  create_task_list: "Creating a list…",
+  rename_task_list: "Renaming a list…",
+  delete_task_list: "Deleting a list…",
 };
 
 const isChatModel = (value: string | null | undefined): value is ChatModel =>
