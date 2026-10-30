@@ -23,3 +23,9 @@ export function formatReminder(iso: string): string {
     return `Tomorrow, ${time}`;
   return `${date.toLocaleDateString([], { day: "numeric", month: "short" })}, ${time}`;
 }
+
+export function formatBytes(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+  return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+}

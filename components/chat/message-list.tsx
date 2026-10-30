@@ -4,6 +4,8 @@ import { useEffect, useRef } from "react";
 
 import { MESSAGE_WIDTH, type ChatMessage } from "@/components/chat/types";
 import { cn } from "@/lib/utils";
+import { AttachmentChips } from "./attachment-chips";
+import { Citations } from "./citations";
 import { Markdown } from "./markdown";
 import { MessageUsage } from "./message-usage";
 
@@ -40,9 +42,13 @@ export function MessageList({ messages }: { messages: ChatMessage[] }) {
       >
         {messages.map((m) =>
           m.role === "assistant" ? (
-            <AssistantMessage key={m.id} message={m} />
+            <div key={m.id}>
+              <AssistantMessage message={m} />
+              <Citations content={m.content} />
+            </div>
           ) : (
-            <div key={m.id} className="flex justify-end">
+            <div key={m.id} className="flex flex-col items-end gap-1.5">
+              <AttachmentChips items={m.attachments ?? []} />
               <div className="max-w-[80%] rounded-2xl bg-muted px-4 py-2 whitespace-pre-wrap">
                 {m.content}
               </div>

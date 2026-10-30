@@ -79,8 +79,16 @@ export function useChatStream() {
               });
               if (usedTools) {
                 // Tools may have created or changed tasks
-                queryClient.invalidateQueries({ queryKey: ["tasks"] });
-                queryClient.invalidateQueries({ queryKey: ["task-lists"] }); // use your queryKeys value
+                queryClient.invalidateQueries({ queryKey: queryKeys.tasks });
+                queryClient.invalidateQueries({
+                  queryKey: queryKeys.taskLists,
+                });
+              }
+              if (request.document_ids?.length) {
+                // Files attached in chat now appear on the Documents page
+                queryClient.invalidateQueries({
+                  queryKey: queryKeys.documents,
+                });
               }
               break;
             case "error":

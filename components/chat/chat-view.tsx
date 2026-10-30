@@ -24,7 +24,7 @@ import { ApiError } from "@/lib/api";
 import { CHAT_MODELS, DEFAULT_MODEL, type ChatModel } from "@/lib/config";
 import { queryKeys } from "@/lib/query-keys";
 import { cn } from "@/lib/utils";
-import type { ConversationDetail } from "@/types/api";
+import type { Attachment, ConversationDetail } from "@/types/api";
 import { useQueryClient } from "@tanstack/react-query";
 import { MessageSquareOffIcon } from "lucide-react";
 import Link from "next/link";
@@ -47,6 +47,8 @@ const TOOL_LABELS: Record<string, string> = {
   create_task_list: "Creating a list…",
   rename_task_list: "Renaming a list…",
   delete_task_list: "Deleting a list…",
+  search_documents: "Searching documents…",
+  list_documents: "Reading documents…",
 };
 
 const isChatModel = (value: string | null | undefined): value is ChatModel =>
@@ -98,9 +100,9 @@ export function ChatView({ conversationId }: { conversationId?: string }) {
     );
   }
 
-  async function handleSend(text: string) {
+  async function handleSend(text: string, attachments: Attachment[] = []) {
     const history = messages;
-    const userMessage = newMessage("user", text);
+    const userMessage = newMessage("user", text, { attachments });
     const draft = newMessage("assistant", "", { status: "streaming", model });
     setLocalMessages([...history, userMessage, draft]);
 
@@ -109,7 +111,12 @@ export function ChatView({ conversationId }: { conversationId?: string }) {
     let aiTitle: string | null = null;
 
     await send(
-      { conversation_id: conversationId, message: text, model },
+      {
+        conversation_id: conversationId,
+        message: text,
+        model,
+        document_ids: attachments.map((a) => a.id),
+      },
       {
         onStart: (id) => {
           activeId = id;
