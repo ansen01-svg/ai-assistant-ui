@@ -39,6 +39,7 @@ export type ChatRequest = {
   conversation_id?: string;
   message: string;
   model: string;
+  timezone?: string; // set by useChatStream
 };
 
 // SSE events sent by POST /chat/stream
