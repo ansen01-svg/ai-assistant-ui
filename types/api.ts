@@ -9,6 +9,11 @@ export type User = {
 
 export type MessageRole = "user" | "assistant";
 
+export type Attachment = {
+  id: string;
+  filename: string;
+};
+
 export type Message = {
   id: string;
   role: MessageRole;
@@ -18,6 +23,15 @@ export type Message = {
   output_tokens: number | null;
   cost_usd: number | null;
   created_at: string;
+  attachments?: Attachment[] | null;
+};
+
+export type ChatRequest = {
+  conversation_id?: string;
+  message: string;
+  model: string;
+  timezone?: string; // set by useChatStream
+  document_ids?: string[];
 };
 
 export type ConversationSummary = {
@@ -34,13 +48,6 @@ export type ConversationDetail = ConversationSummary & {
 
 export type LoginInput = { email: string; password: string };
 export type RegisterInput = { email: string; name: string; password: string };
-
-export type ChatRequest = {
-  conversation_id?: string;
-  message: string;
-  model: string;
-  timezone?: string; // set by useChatStream
-};
 
 // SSE events sent by POST /chat/stream
 export type ChatStreamEvent =

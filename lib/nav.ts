@@ -34,7 +34,7 @@ export const mainNav: NavItem[] = [
     href: "/documents",
     icon: FileTextIcon,
     version: "v4",
-    enabled: false,
+    enabled: true,
     description:
       "Upload PDFs and docs, then ask questions answered with sources (RAG).",
   },

@@ -1,9 +1,7 @@
-import type { Metadata } from "next"
+import { DocumentsView } from "@/components/documents/documents-view";
 
-import { ComingSoon } from "@/components/coming-soon"
-
-export const metadata: Metadata = { title: "Documents" }
+export const metadata = { title: "Documents" };
 
 export default function DocumentsPage() {
-  return <ComingSoon href="/documents" />
+  return <DocumentsView />;
 }
