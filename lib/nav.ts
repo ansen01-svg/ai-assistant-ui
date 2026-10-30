@@ -6,18 +6,18 @@ import {
   PlugIcon,
   SettingsIcon,
   type LucideIcon,
-} from "lucide-react"
+} from "lucide-react";
 
 export type NavItem = {
-  title: string
-  href: string
-  icon: LucideIcon
+  title: string;
+  href: string;
+  icon: LucideIcon;
   /** Roadmap stage that ships this feature. */
-  version: string
+  version: string;
   /** Flip to true when the feature is built. */
-  enabled: boolean
-  description: string
-}
+  enabled: boolean;
+  description: string;
+};
 
 // Single source of truth for app sections. Enabling a feature = set enabled: true and build its page.
 export const mainNav: NavItem[] = [
@@ -35,7 +35,8 @@ export const mainNav: NavItem[] = [
     icon: FileTextIcon,
     version: "v4",
     enabled: false,
-    description: "Upload PDFs and docs, then ask questions answered with sources (RAG).",
+    description:
+      "Upload PDFs and docs, then ask questions answered with sources (RAG).",
   },
   {
     title: "Tasks",
@@ -59,9 +60,10 @@ export const mainNav: NavItem[] = [
     icon: BotIcon,
     version: "v6",
     enabled: false,
-    description: "Multi-step agents and workflows that plan, use tools and finish tasks.",
+    description:
+      "Multi-step agents and workflows that plan, use tools and finish tasks.",
   },
-]
+];
 
 export const secondaryNav: NavItem[] = [
   {
@@ -69,10 +71,10 @@ export const secondaryNav: NavItem[] = [
     href: "/settings",
     icon: SettingsIcon,
     version: "v9",
-    enabled: false,
+    enabled: true,
     description: "Profile, workspace, usage and API settings.",
   },
-]
+];
 
 export const findNavItem = (href: string) =>
-  [...mainNav, ...secondaryNav].find((item) => item.href === href)
+  [...mainNav, ...secondaryNav].find((item) => item.href === href);

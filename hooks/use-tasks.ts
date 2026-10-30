@@ -16,7 +16,9 @@ export type Task = ExtractedTask & {
   id: string;
   status: TaskStatus;
   list_id: string | null;
+  remind_at: string | null; // ISO datetime
 };
+
 export type Extraction = { list_name: string; tasks: ExtractedTask[] };
 
 const BASE = "/tasks";

@@ -8,9 +8,9 @@ import {
   useTasks,
   useUpdateTaskStatus,
 } from "@/hooks/use-tasks";
-import { formatDueDate } from "@/lib/format";
+import { formatDueDate, formatReminder } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import { Trash2 } from "lucide-react";
+import { BellIcon, Trash2 } from "lucide-react";
 
 export function TaskList({ listId }: { listId: string | null }) {
   const { data: tasks, isPending, error } = useTasks(listId);
@@ -52,9 +52,17 @@ export function TaskList({ listId }: { listId: string | null }) {
               >
                 {task.title}
               </p>
-              {task.due_date && (
-                <p className="text-sm text-muted-foreground">
-                  Due {formatDueDate(task.due_date)}
+              {(task.due_date || task.remind_at) && (
+                <p className="flex flex-wrap items-center gap-x-3 text-sm text-muted-foreground">
+                  {task.due_date && (
+                    <span>Due {formatDueDate(task.due_date)}</span>
+                  )}
+                  {task.remind_at && (
+                    <span className="inline-flex items-center gap-1">
+                      <BellIcon className="size-3.5" aria-hidden />
+                      {formatReminder(task.remind_at)}
+                    </span>
+                  )}
                 </p>
               )}
               {task.notes && (
