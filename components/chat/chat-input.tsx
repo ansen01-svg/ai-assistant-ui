@@ -17,7 +17,8 @@ import type { ChatModel } from "@/lib/config";
 import type { Attachment } from "@/types/api";
 
 const MAX_LENGTH = 32_000; // matches backend ChatRequest.message max_length
-const DEFAULT_PROMPT = "Summarize the attached document.";
+const DEFAULT_PROMPT = "Summarize the attached file.";
+const ACCEPT = ".pdf,.docx,.txt,.md,.png,.jpg,.jpeg,.webp,.gif";
 
 type Props = {
   onSend: (text: string, attachments: Attachment[]) => void;
@@ -95,6 +96,13 @@ export function ChatInput({
         autoFocus={autoFocus}
         rows={1}
         className="max-h-60 min-h-11 resize-none border-none bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent"
+        onPaste={(e) => {
+          // Paste a screenshot straight into the chat
+          if (e.clipboardData.files.length > 0) {
+            e.preventDefault();
+            attachments.add(e.clipboardData.files);
+          }
+        }}
       />
 
       <div className="flex items-center justify-between">
@@ -117,7 +125,7 @@ export function ChatInput({
           <input
             ref={fileRef}
             type="file"
-            accept=".pdf,.docx,.txt,.md"
+            accept={ACCEPT}
             multiple
             hidden
             onChange={(e) => {

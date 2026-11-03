@@ -5,7 +5,9 @@ import { useState } from "react";
 import { type DocumentItem, useUploadDocument } from "@/hooks/use-documents";
 
 const MAX_FILES = 3;
-const MAX_BYTES = 10 * 1024 * 1024;
+const IMAGE = /\.(png|jpe?g|webp|gif)$/i;
+const MAX_DOC_BYTES = 10 * 1024 * 1024;
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
 export function useChatAttachments() {
   const upload = useUploadDocument();
@@ -14,16 +16,21 @@ export function useChatAttachments() {
 
   async function add(files: FileList | null) {
     setError(null);
+    let count = items.length; // `items` is stale inside this loop
     for (const file of Array.from(files ?? [])) {
-      if (items.length >= MAX_FILES)
-        return setError(`Up to ${MAX_FILES} files per message`);
-      if (file.size > MAX_BYTES) {
-        setError(`${file.name} is larger than 10 MB`);
+      if (count >= MAX_FILES) {
+        setError(`Up to ${MAX_FILES} files per message`);
+        return;
+      }
+      const limit = IMAGE.test(file.name) ? MAX_IMAGE_BYTES : MAX_DOC_BYTES;
+      if (file.size > limit) {
+        setError(`${file.name} is larger than ${limit / 1024 / 1024} MB`);
         continue;
       }
       try {
         const doc = await upload.mutateAsync(file);
         setItems((prev) => [...prev, doc]);
+        count++;
       } catch (e) {
         setError(e instanceof Error ? e.message : "Upload failed");
       }

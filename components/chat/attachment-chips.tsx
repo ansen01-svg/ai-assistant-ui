@@ -1,4 +1,6 @@
-import { FileText, X } from "lucide-react";
+import { FileTextIcon, ImageIcon, XIcon } from "lucide-react";
+
+const isImage = (name: string) => /\.(png|jpe?g|webp|gif)$/i.test(name);
 
 type Item = { id: string; filename: string };
 
@@ -17,7 +19,11 @@ export function AttachmentChips({
           key={a.id}
           className="inline-flex max-w-56 items-center gap-1 rounded-md border bg-background px-2 py-1 text-xs"
         >
-          <FileText className="size-3.5 shrink-0 text-muted-foreground" />
+          {isImage(a.filename) ? (
+            <ImageIcon className="size-3.5 shrink-0 text-muted-foreground" />
+          ) : (
+            <FileTextIcon className="size-3.5 shrink-0 text-muted-foreground" />
+          )}
           <span className="truncate">{a.filename}</span>
           {onRemove && (
             <button
@@ -26,7 +32,7 @@ export function AttachmentChips({
               onClick={() => onRemove(a.id)}
               className="text-muted-foreground hover:text-foreground"
             >
-              <X className="size-3" />
+              <XIcon className="size-3" />
             </button>
           )}
         </span>
