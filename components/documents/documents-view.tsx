@@ -14,7 +14,7 @@ import {
 } from "@/hooks/use-documents";
 import { formatBytes } from "@/lib/format";
 
-const ACCEPT = ".pdf,.docx,.txt,.md";
+const ACCEPT = ".pdf,.docx,.txt,.md,.png,.jpg,.jpeg,.webp,.gif";
 const MAX_BYTES = 10 * 1024 * 1024;
 
 const STATUS: Record<
@@ -67,8 +67,8 @@ export function DocumentsView() {
           <div>
             <h1 className="text-xl font-semibold">Documents</h1>
             <p className="text-sm text-muted-foreground">
-              PDF, DOCX, TXT or MD up to 10 MB. Ask Bobby questions about them
-              in chat.
+              PDF, DOCX, TXT, MD or images (PNG, JPG, WebP, GIF). Ask Bobby
+              about them in chat.
             </p>
           </div>
           <Button

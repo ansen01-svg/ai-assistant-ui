@@ -1,8 +1,8 @@
 import { FileText } from "lucide-react";
 import Link from "next/link";
 
-// [file.pdf, chunk 3] (RAG) or [file.pdf] (attached file read in full)
-const CITATION = /\[([^[\]]+?\.(?:pdf|docx|txt|md))(?:, chunk (\d+))?\]/gi;
+const CITATION =
+  /\[([^[\]]+?\.(?:pdf|docx|txt|md|png|jpe?g|webp|gif))(?:, chunk (\d+))?\]/gi;
 
 export function Citations({ content }: { content: string }) {
   const sources = new Map<string, Set<number>>();

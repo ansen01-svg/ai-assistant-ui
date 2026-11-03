@@ -16,6 +16,7 @@ export interface DocumentItem {
   error: string | null;
   chunk_count: number;
   created_at: string;
+  kind: "document" | "image";
 }
 
 const isBusy = (d: DocumentItem) =>
