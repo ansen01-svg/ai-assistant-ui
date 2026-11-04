@@ -49,6 +49,8 @@ const TOOL_LABELS: Record<string, string> = {
   delete_task_list: "Deleting a list…",
   search_documents: "Searching documents…",
   list_documents: "Reading documents…",
+  web_search: "Searching the web…",
+  web_fetch: "Reading the page…",
 };
 
 const isChatModel = (value: string | null | undefined): value is ChatModel =>
